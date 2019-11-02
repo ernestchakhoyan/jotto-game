@@ -7,7 +7,7 @@ class Congrats extends Component {
         return (
             <div data-test="congrats-component">
                 {success ? (
-                    <div data-test="congrats-message">
+                    <div data-test="congrats-message" className="alert alert-success">
                         Congratulation! You guessed the word!
                     </div>
                 ) : (
