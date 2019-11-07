@@ -2,6 +2,7 @@ import React from "react";
 import {shallow} from "enzyme";
 import { findByTestAttr, storeFactory } from "../../test-utils/testUtil";
 import Input from "./Input";
+import { guessWord } from "../../actions";
 
 
 const setup = (initialState = {}) => {
@@ -56,6 +57,21 @@ describe("> render", () => {
         it("should not renders submit button", () => {
             const component = findByTestAttr(wrapper, "submit-btn");
             expect(component.length).toBe(0);
+        });
+    });
+
+    describe("> redux props", () => {
+        it("should have success piece of state as props", () => {
+            const success = true;
+            const wrapper = setup({success});
+            const componentProps = wrapper.instance().props.success;
+            expect(componentProps).toBe(success);
+        });
+
+        it("should `guessWord` action creator as a prop", () => {
+            const wrapper = setup();
+            const componentProps = wrapper.instance().props.guessWord;
+            expect(componentProps).toBeInstanceOf(Function);
         });
     });
 });
