@@ -1,13 +1,11 @@
 import React from "react";
-import {shallow} from "enzyme";
+import { shallow } from "enzyme";
 import { findByTestAttr, storeFactory } from "../../test-utils/testUtil";
-import Input from "./Input";
-import { guessWord } from "../../actions";
-
+import Input, { UnconnectedInput } from "./Input";
 
 const setup = (initialState = {}) => {
     const store = storeFactory(initialState);
-    return  shallow(<Input store={store}/>).dive().dive();
+    return shallow(<Input store={store} />).dive().dive();
 };
 
 describe("> render", () => {
@@ -15,8 +13,8 @@ describe("> render", () => {
     describe("> word has not been guessed", () => {
         let wrapper;
 
-        beforeEach(function () {
-            const  initialState = {success: false};
+        beforeEach(function() {
+            const initialState = { success: false };
             wrapper = setup(initialState);
         });
 
@@ -39,8 +37,8 @@ describe("> render", () => {
     describe("> word has been guessed", () => {
         let wrapper;
 
-        beforeEach(function () {
-            const  initialState = {success: true};
+        beforeEach(function() {
+            const initialState = { success: true };
             wrapper = setup(initialState);
         });
 
@@ -63,7 +61,7 @@ describe("> render", () => {
     describe("> redux props", () => {
         it("should have success piece of state as props", () => {
             const success = true;
-            const wrapper = setup({success});
+            const wrapper = setup({ success });
             const componentProps = wrapper.instance().props.success;
             expect(componentProps).toBe(success);
         });
@@ -72,6 +70,21 @@ describe("> render", () => {
             const wrapper = setup();
             const componentProps = wrapper.instance().props.guessWord;
             expect(componentProps).toBeInstanceOf(Function);
+        });
+    });
+
+    describe("> `guessWord` action creator", () => {
+        it("should call action one time on button click", () => {
+            const guessWordMock = jest.fn();
+            const props = {
+                guessWord: guessWordMock
+            };
+            const wrapper = shallow(<UnconnectedInput {...props} />);
+            const submitBtn = findByTestAttr(wrapper, "submit-btn");
+
+            submitBtn.simulate("click");
+            const guessWordMockCallsCount = guessWordMock.mock.calls.length;
+            expect(guessWordMockCallsCount).toBe(1);
         });
     });
 });
