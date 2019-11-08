@@ -1,6 +1,9 @@
 import React from "react";
 import { shallow } from "enzyme";
-import { findByTestAttr, storeFactory } from "../../test-utils/testUtil";
+import {
+    findByTestAttr,
+    storeFactory
+} from "../../test-utils/testUtil";
 import Input, { UnconnectedInput } from "./Input";
 
 const setup = (initialState = {}) => {
@@ -74,17 +77,36 @@ describe("> render", () => {
     });
 
     describe("> `guessWord` action creator", () => {
-        it("should call action one time on button click", () => {
-            const guessWordMock = jest.fn();
+        let wrapper;
+        let guessWordMock;
+        const guessedWord = "train";
+
+        beforeEach(function() {
+            guessWordMock = jest.fn();
+
             const props = {
                 guessWord: guessWordMock
             };
-            const wrapper = shallow(<UnconnectedInput {...props} />);
-            const submitBtn = findByTestAttr(wrapper, "submit-btn");
 
-            submitBtn.simulate("click");
+            wrapper = shallow(<UnconnectedInput {...props} />);
+            wrapper.setState({ currentGuess: guessedWord });
+
+            const submitBtn = findByTestAttr(wrapper, "submit-btn");
+            submitBtn.simulate("click", {
+                preventDefault() {
+                }
+            });
+
+        });
+
+        it("should call action one time on button click", () => {
             const guessWordMockCallsCount = guessWordMock.mock.calls.length;
             expect(guessWordMockCallsCount).toBe(1);
+        });
+
+        it("should call `guessWord` with  input value as argument", () => {
+            const guessedWordMockArguments = guessWordMock.mock.calls[ 0 ][ 0 ];
+            expect(guessedWordMockArguments).toBe(guessedWord);
         });
     });
 });
